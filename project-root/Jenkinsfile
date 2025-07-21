@@ -10,7 +10,7 @@ pipeline {
     stage('Build scrapyd') {
       steps {
         sh '''
-          docker build -t scrapyd ./scrapyd
+          docker build -t scrapyd project-root/scrapyd
           docker tag scrapyd $REGISTRY/scrapy/scrapyd:$IMAGE_TAG
         '''
       }
@@ -19,7 +19,7 @@ pipeline {
     stage('Build scrapydweb') {
       steps {
         sh '''
-          docker build -t scrapydweb ./scrapydweb
+          docker build -t scrapydweb project-root/scrapydweb
           docker tag scrapydweb $REGISTRY/scrapy/scrapydweb:$IMAGE_TAG
         '''
       }
