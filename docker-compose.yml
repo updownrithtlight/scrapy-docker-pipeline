@@ -1,0 +1,37 @@
+version: '3.9'
+
+services:
+  scrapyd:
+    image: registry.chengziback.xyz/scrapy/scrapyd:latest
+    container_name: scrapyd
+    restart: always
+    ports:
+      - "6800:6800"
+    networks:
+      - scrapynetwork
+
+  scrapydweb:
+    image: registry.chengziback.xyz/scrapy/scrapydweb:latest
+    container_name: scrapydweb
+    restart: always
+    ports:
+      - "5005:5000"
+    depends_on:
+      - scrapyd
+    networks:
+      - scrapynetwork
+
+  rq-dashboard:
+    image: registry.chengziback.xyz/scrapy/rq-dashboard:latest
+    container_name: rq-dashboard
+    restart: always
+    ports:
+      - "9181:9181"
+    environment:
+      - RQ_DASHBOARD_REDIS_URL=redis://192.168.31.42:6379/1
+    networks:
+      - scrapynetwork
+
+networks:
+  scrapynetwork:
+    driver: bridge
