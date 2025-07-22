@@ -1,37 +1,39 @@
 pipeline {
-  agent any
+    agent any
 
-  environment {
-    REGISTRY   = 'registry.billlvtech.site'
-    IMAGE_TAG  = 'latest'
-  }
-
-  stages {
-    stage('Build scrapyd') {
-      steps {
-        sh '''
-          docker build -t scrapyd project-root/scrapyd
-          docker tag scrapyd $REGISTRY/scrapy/scrapyd:$IMAGE_TAG
-        '''
-      }
+    environment {
+        REGISTRY = 'registry.billlvtech.site'
+        IMAGE_TAG = 'latest'
+        SCRAPYD_IMAGE = "${REGISTRY}/scrapy/scrapyd:${IMAGE_TAG}"
+        SCRAPYWEB_IMAGE = "${REGISTRY}/scrapy/scrapydweb:${IMAGE_TAG}"
     }
 
-    stage('Build scrapydweb') {
-      steps {
-        sh '''
-          docker build -t scrapydweb project-root/scrapydweb
-          docker tag scrapydweb $REGISTRY/scrapy/scrapydweb:$IMAGE_TAG
-        '''
-      }
-    }
+    stages {
+        stage('Build scrapyd') {
+            steps {
+                sh '''
+                    docker build -t scrapyd project-root/scrapyd
+                    docker tag scrapyd $SCRAPYD_IMAGE
+                '''
+            }
+        }
 
-    stage('Push Images') {
-      steps {
-        sh '''
-          docker push $REGISTRY/scrapy/scrapyd:$IMAGE_TAG
-          docker push $REGISTRY/scrapy/scrapydweb:$IMAGE_TAG
-        '''
-      }
+        stage('Build scrapydweb') {
+            steps {
+                sh '''
+                    docker build -t scrapydweb project-root/scrapydweb
+                    docker tag scrapydweb $SCRAPYWEB_IMAGE
+                '''
+            }
+        }
+
+        stage('Push Images') {
+            steps {
+                sh '''
+                    docker push $SCRAPYD_IMAGE
+                    docker push $SCRAPYWEB_IMAGE
+                '''
+            }
+        }
     }
-  }
 }
