@@ -9,4 +9,4 @@ RUN pip install --no-cache-dir scrapyd
 EXPOSE 6800
 
 # 启动 scrapyd 服务
-CMD ["scrapyd", "--bind=0.0.0.0"]
+CMD ["scrapyd"]
